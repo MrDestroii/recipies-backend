@@ -1,3 +1,4 @@
+import { IngredientModule } from './../ingredient/ingredient.module';
 import { RecipeModule } from './../recipe/recipe.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule as NestConfigModule } from '@nestjs/config';
@@ -16,6 +17,7 @@ import { LikeEntity } from 'src/entity/like.entity';
 
 @Module({
   imports: [
+    IngredientModule,
     RecipeModule,
     AuthModule,
     UserModule,
@@ -37,7 +39,7 @@ import { LikeEntity } from 'src/entity/like.entity';
             RecipeEntity,
             IngredientEntity,
             AlternativeIngredientEntity,
-            LikeEntity
+            LikeEntity,
           ],
           synchronize: true,
         };
