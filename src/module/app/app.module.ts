@@ -1,3 +1,4 @@
+import { LikeModule } from './../like/like.module';
 import { IngredientModule } from './../ingredient/ingredient.module';
 import { RecipeModule } from './../recipe/recipe.module';
 import { Module } from '@nestjs/common';
@@ -17,6 +18,7 @@ import { LikeEntity } from 'src/entity/like.entity';
 
 @Module({
   imports: [
+    LikeModule,
     IngredientModule,
     RecipeModule,
     AuthModule,

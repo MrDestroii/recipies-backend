@@ -1,7 +1,12 @@
 import { Injectable } from '@nestjs/common';
+
+import * as R from 'ramda';
+
 import { RecipeRepository } from './repository/recipe.repository';
 import { IngredientRepository } from '../ingredient/ingredient.repository';
 import { AlternativeIngredientRepository } from './repository/alternative-igredient.repository';
+import { RecipeEntity } from 'src/entity/recipe.entity';
+import { LikeEntity } from 'src/entity/like.entity';
 
 @Injectable()
 export class RecipeService {
@@ -11,8 +16,8 @@ export class RecipeService {
     private readonly alternativeIngredientRepository: AlternativeIngredientRepository,
   ) {}
 
-  find() {
-    return this.recipeRepository.find({
+  async find() {
+    const recipes: RecipeEntity[] = await this.recipeRepository.find({
       relations: [
         'likes',
         'likes.user',
@@ -22,10 +27,12 @@ export class RecipeService {
         'alternativeIngredients.ingredientAlternative',
       ],
     });
+
+    return R.map<RecipeEntity, RecipeEntity>(this.filterLikes)(recipes);
   }
 
   async get(id: string) {
-    const recipe = await this.recipeRepository.findOneOrFail(id, {
+    const recipe: RecipeEntity = await this.recipeRepository.findOneOrFail(id, {
       relations: [
         'likes',
         'likes.user',
@@ -36,8 +43,14 @@ export class RecipeService {
       ],
     });
 
-    console.log({ recipe });
+    return this.filterLikes(recipe);
+  }
 
-    return recipe;
+  filterLikes(recipe: RecipeEntity): RecipeEntity {
+    const recipeWithFilteredLikes = {
+      ...recipe,
+      likes: R.filter<LikeEntity>(R.prop('isActive'))(recipe.likes),
+    };
+    return recipeWithFilteredLikes;
   }
 }
