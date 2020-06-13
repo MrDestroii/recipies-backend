@@ -13,6 +13,7 @@ import { RecipeEntity } from 'src/entity/recipe.entity';
 import { IngredientEntity } from 'src/entity/ingredient.entity';
 import { AlternativeIngredientEntity } from 'src/entity/alternative-ingredient.entity';
 import { LikeEntity } from 'src/entity/like.entity';
+import { StepEntity } from 'src/entity/step.entity';
 
 const dbConfig = new ConfigService().getDatabaseEnvVariables();
 
@@ -29,6 +30,7 @@ const loadFixtures = async (fixturesPath: string) => {
         IngredientEntity,
         AlternativeIngredientEntity,
         LikeEntity,
+        StepEntity
       ],
     });
     await connection.synchronize(true);

@@ -1,0 +1,22 @@
+entity: StepEntity
+items:
+  step0:
+    text: 'Step one'
+    position: 0
+    recipe: '@recipe0'
+  step1:
+    text: 'Step Three'
+    position: 2
+    recipe: '@recipe0'
+  step2:
+    text: 'Step Four'
+    position: 3
+    recipe: '@recipe0'
+  step3:
+    text: 'Step Two'
+    position: 1
+    recipe: '@recipe0'
+  step4:
+    text: 'Step Five'
+    position: 4
+    recipe: '@recipe0'

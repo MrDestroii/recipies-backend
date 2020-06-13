@@ -31,7 +31,7 @@ export class RecipeService {
         'alternativeIngredients.ingredient',
         'alternativeIngredients.ingredientAlternative',
         'steps'
-      ],
+      ]
     });
 
     return R.map<RecipeEntity, RecipeEntity>(this.filterLikes)(recipes);
