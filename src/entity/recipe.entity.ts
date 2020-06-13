@@ -28,6 +28,9 @@ export class RecipeEntity extends BaseEntity {
   @Column('int')
   complexity: number;
 
+  @Column("varchar", { nullable: true })
+  description: string;
+
   @ManyToMany(type => IngredientEntity)
   @JoinTable()
   ingredients: IngredientEntity[];

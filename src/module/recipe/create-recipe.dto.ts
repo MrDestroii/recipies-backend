@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsUrl, IsNumber, Max, Min } from 'class-validator';
+import { IsNotEmpty, IsUrl, IsNumber, Max, Min, IsString } from 'class-validator';
 import { IngredientEntity } from 'src/entity/ingredient.entity';
 
 export type CreateAlternativeIngredients = {
@@ -17,6 +17,9 @@ export class CreateRecipeDTO {
   @Max(10)
   @Min(1)
   complexity: number;
+
+  @IsString()
+  description: string;
 
   @IsNotEmpty()
   ingredients: IngredientEntity[];

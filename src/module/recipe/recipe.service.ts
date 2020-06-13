@@ -65,6 +65,7 @@ export class RecipeService {
       photo: data.photo,
       complexity: data.complexity,
       ingredients: data.ingredients,
+      description: data.description,
       user,
     });
 
