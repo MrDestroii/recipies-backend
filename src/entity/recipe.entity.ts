@@ -13,6 +13,7 @@ import { IngredientEntity } from './ingredient.entity';
 import { UserEntity } from './user.entity';
 import { AlternativeIngredientEntity } from './alternative-ingredient.entity';
 import { LikeEntity } from './like.entity'
+import { StepEntity } from './step.entity'
 
 @Entity('recipe')
 export class RecipeEntity extends BaseEntity {
@@ -43,4 +44,7 @@ export class RecipeEntity extends BaseEntity {
 
   @OneToMany(type => LikeEntity, like => like.recipe)
   likes: LikeEntity[]
+
+  @OneToMany(type => StepEntity, step => step.recipe)
+  steps: StepEntity[]
 }

@@ -15,6 +15,7 @@ import { RecipeEntity } from 'src/entity/recipe.entity';
 import { IngredientEntity } from 'src/entity/ingredient.entity';
 import { AlternativeIngredientEntity } from 'src/entity/alternative-ingredient.entity';
 import { LikeEntity } from 'src/entity/like.entity';
+import { StepEntity } from 'src/entity/step.entity';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { LikeEntity } from 'src/entity/like.entity';
             IngredientEntity,
             AlternativeIngredientEntity,
             LikeEntity,
+            StepEntity
           ],
           synchronize: true,
         };

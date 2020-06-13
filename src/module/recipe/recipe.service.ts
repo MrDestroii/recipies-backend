@@ -30,6 +30,7 @@ export class RecipeService {
         'alternativeIngredients',
         'alternativeIngredients.ingredient',
         'alternativeIngredients.ingredientAlternative',
+        'steps'
       ],
     });
 
@@ -45,6 +46,7 @@ export class RecipeService {
         'alternativeIngredients',
         'alternativeIngredients.ingredient',
         'alternativeIngredients.ingredientAlternative',
+        'steps'
       ],
     });
 
