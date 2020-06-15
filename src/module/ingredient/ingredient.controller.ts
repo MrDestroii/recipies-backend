@@ -6,10 +6,12 @@ import {
   Post,
   UsePipes,
   ValidationPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { IngredientService } from './ingredient.service';
 import { CreateIngredientDTO } from './create-ingredient.dto';
 import { IngredientEntity } from 'src/entity/ingredient.entity';
+import { JwtAuthGuard } from 'src/guard/jwt-auth.guard';
 
 @Controller('ingredient')
 export class IngredientController {
@@ -20,6 +22,7 @@ export class IngredientController {
     return this.ingredientService.find(query);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   @UsePipes(new ValidationPipe({ transform: true }))
   create(@Body() data: CreateIngredientDTO): Promise<IngredientEntity> {
