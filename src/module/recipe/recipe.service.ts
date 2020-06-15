@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 
 import * as R from 'ramda';
 
@@ -22,7 +22,8 @@ export class RecipeService {
   ) {}
 
   async find(query: RecipeFindQueryType) {
-    const searchValue: string = getLowerStringFromObject(query.searchValue);
+    try {
+      const searchValue: string = getLowerStringFromObject(query.searchValue);
 
     const recipes = await this.recipeRepository
       .createQueryBuilder("recipe")
@@ -36,9 +37,13 @@ export class RecipeService {
       .where('LOWER(recipe.name) LIKE :search OR LOWER(ingredientsSearch.name) LIKE :search', {
         search: `%${searchValue}%`,
       })
+      .orderBy(`recipe.${query.orderBy}`, query.orderType)
       .getMany();
 
     return R.map<RecipeEntity, RecipeEntity>(this.filterLikes)(recipes);
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.BAD_REQUEST)
+    }
   }
 
   async get(id: string) {
