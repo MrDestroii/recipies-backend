@@ -7,11 +7,11 @@ import { IngredientRepository } from '../ingredient/ingredient.repository';
 import { AlternativeIngredientRepository } from './repository/alternative-igredient.repository';
 import { RecipeEntity } from 'src/entity/recipe.entity';
 import { LikeEntity } from 'src/entity/like.entity';
-import {
-  CreateRecipeDTO,
-} from './create-recipe.dto';
+import { CreateRecipeDTO } from './create-recipe.dto';
 import { IngredientEntity } from 'src/entity/ingredient.entity';
 import { UserEntity } from 'src/entity/user.entity';
+import { RecipeFindQueryType } from './find-query.type';
+import { getLowerStringFromObject } from 'src/helpers/tools';
 
 @Injectable()
 export class RecipeService {
@@ -21,20 +21,24 @@ export class RecipeService {
     private readonly alternativeIngredientRepository: AlternativeIngredientRepository,
   ) {}
 
-  async find() {
-    const recipes: RecipeEntity[] = await this.recipeRepository.find({
-      relations: [
-        'likes',
-        'likes.user',
-        'ingredients',
-        'alternativeIngredients',
-        'alternativeIngredients.ingredient',
-        'alternativeIngredients.ingredientAlternative',
-        'steps'
-      ]
-    });
+  async find(query: RecipeFindQueryType) {
+    const searchValue: string = getLowerStringFromObject(query.searchValue);
 
-    return R.map<RecipeEntity, RecipeEntity>(this.filterLikes)(recipes);
+    const test = await this.recipeRepository
+      .createQueryBuilder("recipe")
+      .innerJoinAndSelect("recipe.likes", "likes")
+      .innerJoinAndSelect("likes.user", "user")
+      .innerJoin("recipe.ingredients", "ingredientsSearch")
+      .innerJoinAndSelect("recipe.ingredients", "ingredients")
+      .innerJoinAndSelect("recipe.alternativeIngredients", "alternativeIngredients")
+      .innerJoinAndSelect("alternativeIngredients.ingredient", "ingredient")
+      .innerJoinAndSelect("alternativeIngredients.ingredientAlternative", "ingredientAlternative")
+      .where('LOWER(recipe.name) LIKE :search OR LOWER(ingredientsSearch.name) LIKE :search', {
+        search: `%${searchValue}%`,
+      })
+      .getMany();
+
+    return test
   }
 
   async get(id: string) {
@@ -46,7 +50,7 @@ export class RecipeService {
         'alternativeIngredients',
         'alternativeIngredients.ingredient',
         'alternativeIngredients.ingredientAlternative',
-        'steps'
+        'steps',
       ],
     });
 

@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Body } from '@nestjs/common';
+import { Controller, Get, Param, Post, Body, Query } from '@nestjs/common';
 
 import { UserReq } from 'src/decorators/user.decorator'
 
@@ -7,13 +7,14 @@ import { RecipeService } from './recipe.service';
 import { CreateRecipeDTO } from './create-recipe.dto'
 import { RecipeEntity } from 'src/entity/recipe.entity';
 import { UserEntity } from 'src/entity/user.entity';
+import { RecipeFindQueryType } from './find-query.type';
 
 @Controller('recipe')
 export class RecipeController {
   constructor(private readonly recipeService: RecipeService){}
   @Get()
-  find() {
-    return this.recipeService.find()
+  find(@Query() query: RecipeFindQueryType ) {
+    return this.recipeService.find(query)
   }
 
   @Get("/:id")
