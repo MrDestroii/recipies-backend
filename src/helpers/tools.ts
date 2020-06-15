@@ -1,3 +1,6 @@
-import * as R from 'ramda'
+import * as R from 'ramda';
 
-export const getLowerStringFromObject = R.compose(R.toLower, R.defaultTo(''))
+export const getLowerStringFromObject: (value: string) => string = R.compose(
+  R.toLower,
+  R.defaultTo(''),
+);
