@@ -24,7 +24,7 @@ export class RecipeService {
   async find(query: RecipeFindQueryType) {
     const searchValue: string = getLowerStringFromObject(query.searchValue);
 
-    const test = await this.recipeRepository
+    const recipes = await this.recipeRepository
       .createQueryBuilder("recipe")
       .innerJoinAndSelect("recipe.likes", "likes")
       .innerJoinAndSelect("likes.user", "user")
@@ -38,7 +38,7 @@ export class RecipeService {
       })
       .getMany();
 
-    return test
+    return R.map<RecipeEntity, RecipeEntity>(this.filterLikes)(recipes);
   }
 
   async get(id: string) {
