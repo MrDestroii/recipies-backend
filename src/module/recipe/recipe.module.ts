@@ -8,6 +8,8 @@ import { AlternativeIngredientEntity } from 'src/entity/alternative-ingredient.e
 import { RecipeRepository } from './repository/recipe.repository';
 import { IngredientRepository } from '../ingredient/ingredient.repository';
 import { AlternativeIngredientRepository } from './repository/alternative-igredient.repository';
+import { StepRepository } from './repository/step.repository';
+import { StepEntity } from 'src/entity/step.entity';
 
 @Module({
   imports: [
@@ -15,9 +17,11 @@ import { AlternativeIngredientRepository } from './repository/alternative-igredi
       RecipeEntity,
       IngredientEntity,
       AlternativeIngredientEntity,
+      StepEntity,
       RecipeRepository,
       IngredientRepository,
       AlternativeIngredientRepository,
+      StepRepository
     ]),
   ],
   controllers: [RecipeController],

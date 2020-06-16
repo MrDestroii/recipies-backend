@@ -4,7 +4,7 @@ import { UserReq } from 'src/decorators/user.decorator'
 
 import { RecipeService } from './recipe.service';
 
-import { CreateRecipeDTO } from './create-recipe.dto'
+import { CreateRecipeDTO } from './dto/create-recipe.dto'
 import { RecipeEntity } from 'src/entity/recipe.entity';
 import { UserEntity } from 'src/entity/user.entity';
 import { RecipeFindQueryType } from './find-query.type';

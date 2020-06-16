@@ -7,11 +7,14 @@ import { IngredientRepository } from '../ingredient/ingredient.repository';
 import { AlternativeIngredientRepository } from './repository/alternative-igredient.repository';
 import { RecipeEntity } from 'src/entity/recipe.entity';
 import { LikeEntity } from 'src/entity/like.entity';
-import { CreateRecipeDTO } from './create-recipe.dto';
+import { CreateRecipeDTO } from './dto/create-recipe.dto';
 import { IngredientEntity } from 'src/entity/ingredient.entity';
 import { UserEntity } from 'src/entity/user.entity';
 import { RecipeFindQueryType } from './find-query.type';
 import { getLowerStringFromObject } from 'src/helpers/tools';
+import { StepRepository } from './repository/step.repository';
+import { CreateStepDTO } from './dto/create-step.dto';
+import { Raw } from 'typeorm';
 
 @Injectable()
 export class RecipeService {
@@ -19,35 +22,37 @@ export class RecipeService {
     private readonly recipeRepository: RecipeRepository,
     private readonly ingredientRepository: IngredientRepository,
     private readonly alternativeIngredientRepository: AlternativeIngredientRepository,
+    private readonly stepRepository: StepRepository,
   ) {}
 
   async find(query: RecipeFindQueryType) {
     try {
       const searchValue: string = getLowerStringFromObject(query.searchValue);
 
-      const recipes = await this.recipeRepository
-        .createQueryBuilder('recipe')
-        .innerJoinAndSelect('recipe.likes', 'likes')
-        .innerJoinAndSelect('likes.user', 'user')
-        .innerJoin('recipe.ingredients', 'ingredientsSearch')
-        .innerJoinAndSelect('recipe.ingredients', 'ingredients')
-        .innerJoinAndSelect(
-          'recipe.alternativeIngredients',
+      const recipes = await this.recipeRepository.find({
+        relations: [
+          'likes',
+          'likes.user',
           'alternativeIngredients',
-        )
-        .innerJoinAndSelect('alternativeIngredients.ingredient', 'ingredient')
-        .innerJoinAndSelect(
+          'alternativeIngredients.ingredient',
           'alternativeIngredients.ingredientAlternative',
-          'ingredientAlternative',
-        )
-        .where(
-          'LOWER(recipe.name) LIKE :search OR LOWER(ingredientsSearch.name) LIKE :search',
-          {
-            search: `%${searchValue}%`,
-          },
-        )
-        .orderBy(`recipe.${query.orderBy}`, query.orderType)
-        .getMany();
+          'steps',
+          'ingredients',
+        ],
+        join: {
+          alias: 'recipe',
+          innerJoin: { ingredients: 'recipe.ingredients' },
+        },
+        where: {
+          name: Raw(
+            alias =>
+              `LOWER(${alias}) LIKE '%${searchValue}%' OR LOWER(ingredients.name) LIKE '%${searchValue}%'`,
+          ),
+        },
+        order: {
+          [query.orderBy]: query.orderType,
+        },
+      });
       const fiilterByIngredients = this.filterByIngredients(query.ingredients);
 
       return R.compose(
@@ -55,6 +60,7 @@ export class RecipeService {
         R.map<RecipeEntity, RecipeEntity>(this.filterLikes),
       )(recipes);
     } catch (error) {
+      console.log(error);
       throw new HttpException(error, HttpStatus.BAD_REQUEST);
     }
   }
@@ -151,6 +157,16 @@ export class RecipeService {
       )(data.alternativeIngredients),
     );
 
+    await Promise.all(
+      R.map((step: CreateStepDTO) => {
+        const createdStep = this.stepRepository.create({
+          ...step,
+          recipe: savedRecipe,
+        });
+        return this.stepRepository.save(createdStep);
+      })(data.steps),
+    );
+
     const currentRecipe = await this.recipeRepository.findOne(savedRecipe.id, {
       relations: [
         'likes',
@@ -159,6 +175,7 @@ export class RecipeService {
         'alternativeIngredients',
         'alternativeIngredients.ingredient',
         'alternativeIngredients.ingredientAlternative',
+        'steps',
       ],
     });
 
