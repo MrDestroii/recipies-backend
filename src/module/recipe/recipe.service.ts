@@ -14,7 +14,7 @@ import { RecipeFindQueryType } from './find-query.type';
 import { getLowerStringFromObject } from 'src/helpers/tools';
 import { StepRepository } from './repository/step.repository';
 import { CreateStepDTO } from './dto/create-step.dto';
-import { Like, Raw } from 'typeorm';
+import { Raw } from 'typeorm';
 
 @Injectable()
 export class RecipeService {
