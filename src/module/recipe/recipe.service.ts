@@ -25,24 +25,37 @@ export class RecipeService {
     try {
       const searchValue: string = getLowerStringFromObject(query.searchValue);
 
-    const recipes = await this.recipeRepository
-      .createQueryBuilder("recipe")
-      .innerJoinAndSelect("recipe.likes", "likes")
-      .innerJoinAndSelect("likes.user", "user")
-      .innerJoin("recipe.ingredients", "ingredientsSearch")
-      .innerJoinAndSelect("recipe.ingredients", "ingredients")
-      .innerJoinAndSelect("recipe.alternativeIngredients", "alternativeIngredients")
-      .innerJoinAndSelect("alternativeIngredients.ingredient", "ingredient")
-      .innerJoinAndSelect("alternativeIngredients.ingredientAlternative", "ingredientAlternative")
-      .where('LOWER(recipe.name) LIKE :search OR LOWER(ingredientsSearch.name) LIKE :search', {
-        search: `%${searchValue}%`,
-      })
-      .orderBy(`recipe.${query.orderBy}`, query.orderType)
-      .getMany();
+      const recipes = await this.recipeRepository
+        .createQueryBuilder('recipe')
+        .innerJoinAndSelect('recipe.likes', 'likes')
+        .innerJoinAndSelect('likes.user', 'user')
+        .innerJoin('recipe.ingredients', 'ingredientsSearch')
+        .innerJoinAndSelect('recipe.ingredients', 'ingredients')
+        .innerJoinAndSelect(
+          'recipe.alternativeIngredients',
+          'alternativeIngredients',
+        )
+        .innerJoinAndSelect('alternativeIngredients.ingredient', 'ingredient')
+        .innerJoinAndSelect(
+          'alternativeIngredients.ingredientAlternative',
+          'ingredientAlternative',
+        )
+        .where(
+          'LOWER(recipe.name) LIKE :search OR LOWER(ingredientsSearch.name) LIKE :search',
+          {
+            search: `%${searchValue}%`,
+          },
+        )
+        .orderBy(`recipe.${query.orderBy}`, query.orderType)
+        .getMany();
+      const fiilterByIngredients = this.filterByIngredients(query.ingredients);
 
-    return R.map<RecipeEntity, RecipeEntity>(this.filterLikes)(recipes);
+      return R.compose(
+        R.filter<RecipeEntity>(fiilterByIngredients),
+        R.map<RecipeEntity, RecipeEntity>(this.filterLikes),
+      )(recipes);
     } catch (error) {
-      throw new HttpException(error, HttpStatus.BAD_REQUEST)
+      throw new HttpException(error, HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -68,6 +81,21 @@ export class RecipeService {
       likes: R.filter<LikeEntity>(R.prop('isActive'))(recipe.likes),
     };
     return recipeWithFilteredLikes;
+  }
+
+  filterByIngredients(
+    ingredientsIds: string[] = [],
+  ): (value: RecipeEntity) => boolean {
+    const isEmptyIngredientsIds: boolean = R.isEmpty(ingredientsIds);
+    return isEmptyIngredientsIds
+      ? R.always(true)
+      : (recipe: RecipeEntity): boolean => {
+          return R.compose(
+            R.any(item => R.includes(item, ingredientsIds)),
+            R.map(R.prop('id')),
+            R.prop('ingredients'),
+          )(recipe);
+        };
   }
 
   async create(data: CreateRecipeDTO, user: UserEntity) {
