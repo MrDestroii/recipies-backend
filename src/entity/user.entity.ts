@@ -1,7 +1,8 @@
-import { PrimaryGeneratedColumn, Column, Entity } from 'typeorm';
+import { PrimaryGeneratedColumn, Column, Entity, OneToMany } from 'typeorm';
 import { Exclude, classToPlain } from 'class-transformer';
 
 import { BaseEntity } from './base.entity';
+import { RecipeEntity } from './recipe.entity';
 
 @Entity('user')
 export class UserEntity extends BaseEntity {
@@ -19,6 +20,9 @@ export class UserEntity extends BaseEntity {
   @Column('varchar')
   @Exclude({ toPlainOnly: true })
   password: string;
+
+  @OneToMany(type => RecipeEntity, recipe => recipe.user)
+  recipes: RecipeEntity[]
 
   toJSON() {
     return classToPlain(this);
