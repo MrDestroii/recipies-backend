@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Body, Query, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Param, Post, Body, Query, UseGuards, UsePipes, ValidationPipe, Patch } from '@nestjs/common';
 
 import { UserReq } from 'src/decorators/user.decorator'
 
@@ -9,6 +9,7 @@ import { RecipeEntity } from 'src/entity/recipe.entity';
 import { UserEntity } from 'src/entity/user.entity';
 import { RecipeFindQueryType } from './find-query.type';
 import { JwtAuthGuard } from 'src/guard/jwt-auth.guard';
+import { UpdateRecipeDTO } from './dto/update-recipe.dto';
 
 @Controller('recipe')
 export class RecipeController {
@@ -28,5 +29,12 @@ export class RecipeController {
   @UsePipes(new ValidationPipe({ transform: true }))
   create(@Body() data: CreateRecipeDTO, @UserReq() user: UserEntity): Promise<RecipeEntity> {
     return this.recipeService.create(data, user)
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('/:id')
+  @UsePipes(new ValidationPipe({ transform: true }))
+  update(@Param('id') id:string, @Body() data: UpdateRecipeDTO): any {
+    return this.recipeService.update(id, data)
   }
 }
