@@ -1,0 +1,10 @@
+entity: AlternativeIngredientEntity
+items:
+  alternativeIngredient0:
+    recipe: '@recipe0'
+    ingredient: '@ingredient2'
+    ingredientAlternative: '@ingredient1'
+  alternativeIngredient1:
+    recipe: '@recipe0'
+    ingredient: '@ingredient3'
+    ingredientAlternative: '@ingredient4'

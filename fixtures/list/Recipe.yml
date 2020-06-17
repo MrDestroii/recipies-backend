@@ -1,0 +1,12 @@
+entity: RecipeEntity
+items:
+  recipe0:
+    name: Test Recipe 1
+    photo: https://i2.wp.com/www.downshiftology.com/wp-content/uploads/2018/12/Shakshuka-19.jpg
+    complexity: 3
+    user: '@user1'
+    ingredients:  
+      - '@ingredient2'
+      - '@ingredient3'
+      - '@ingredient5'
+      - '@ingredient6'

@@ -1,0 +1,16 @@
+entity: IngredientEntity
+items:
+  ingredient0:
+    name: Bread
+  ingredient1:
+    name: Plum
+  ingredient2:
+    name: Apple
+  ingredient3:
+    name: Orange
+  ingredient4:
+    name: Lemon
+  ingredient5:
+    name: Juice
+  ingredient6:
+    name: Corn

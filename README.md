@@ -34,6 +34,12 @@
 $ npm install
 ```
 
+## Fixtures
+
+```bash
+$ npm run fixtures
+```
+
 ## Running the app
 
 ```bash

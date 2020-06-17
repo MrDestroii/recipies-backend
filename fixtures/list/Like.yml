@@ -1,0 +1,11 @@
+entity: LikeEntity
+items:
+  like0:
+    user: '@user1'
+    recipe: '@recipe0'
+  like1:
+    user: '@user0'
+    recipe: '@recipe0'
+  like2:
+    user: '@user2'
+    recipe: '@recipe0'
