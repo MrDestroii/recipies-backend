@@ -32,11 +32,11 @@ export class RecipeEntity extends BaseEntity {
   @Column("varchar", { nullable: true })
   description: string;
 
-  @ManyToMany(type => IngredientEntity)
+  @ManyToMany(type => IngredientEntity, { cascade: true })
   @JoinTable()
   ingredients: IngredientEntity[];
 
-  @OneToMany(type => AlternativeIngredientEntity, alternativeIngregient => alternativeIngregient.recipe)
+  @OneToMany(type => AlternativeIngredientEntity, alternativeIngregient => alternativeIngregient.recipe, { cascade: true })
   alternativeIngredients: AlternativeIngredientEntity[];
 
   @ManyToOne(type => UserEntity, user => user.recipes)
@@ -45,6 +45,6 @@ export class RecipeEntity extends BaseEntity {
   @OneToMany(type => LikeEntity, like => like.recipe)
   likes: LikeEntity[]
 
-  @OneToMany(type => StepEntity, step => step.recipe)
+  @OneToMany(type => StepEntity, step => step.recipe, { cascade: true })
   steps: StepEntity[]
 }

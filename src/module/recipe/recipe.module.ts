@@ -10,6 +10,7 @@ import { IngredientRepository } from '../ingredient/ingredient.repository';
 import { AlternativeIngredientRepository } from './repository/alternative-igredient.repository';
 import { StepRepository } from './repository/step.repository';
 import { StepEntity } from 'src/entity/step.entity';
+import { RecipeHelper } from './recipe.helper';
 
 @Module({
   imports: [
@@ -25,6 +26,6 @@ import { StepEntity } from 'src/entity/step.entity';
     ]),
   ],
   controllers: [RecipeController],
-  providers: [RecipeService],
+  providers: [RecipeService, RecipeHelper],
 })
 export class RecipeModule {}
